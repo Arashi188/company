@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block title %}Frequently Asked Questions{% endblock %}
+
+{% block content %}
+<section class="faq-page py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col text-center">
+                <h1 class="display-5 fw-bold">Frequently Asked Questions</h1>
+                <p class="lead text-muted">Find answers to common questions about our services</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Search FAQ -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-primary"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="faqSearch" 
+                                   placeholder="Search FAQs...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Categories -->
+                <div class="mb-4">
+                    <div class="btn-group w-100" role="group">
+                        <button class="btn btn-outline-primary active" onclick="filterFAQs('all')">All</button>
+                        <button class="btn btn-outline-primary" onclick="filterFAQs('ordering')">Ordering</button>
+                        <button class="btn btn-outline-primary" onclick="filterFAQs('shipping')">Shipping</button>
+                        <button class="btn btn-outline-primary" onclick="filterFAQs('payment')">Payment</button>
+                        <button class="btn btn-outline-primary" onclick="filterFAQs('returns')">Returns</button>
+                    </div>
+                </div>
+
+                <!-- FAQ Accordion -->
+                <div class="accordion" id="faqAccordion">
+                    <!-- Ordering Questions -->
+                    <div class="faq-category" data-category="ordering">
+                        <h5 class="fw-bold mb-3 mt-4">
+                            <i class="fas fa-shopping-cart text-primary me-2"></i>Ordering
+                        </h5>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    How do I place an order via WhatsApp?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <ol class="mb-0">
+                                        <li>Browse our products and find the item you want</li>
+                                        <li>Click on the product to view details</li>
+                                        <li>Click the "Order via WhatsApp" button</li>
+                                        <li>WhatsApp will open with a pre-filled message</li>
+                                        <li>Review the message and send it to us</li>
+                                        <li>Our team will respond shortly to confirm your order</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Can I order multiple products at once?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes! You can add multiple items to your cart and use the checkout feature to generate a single WhatsApp message with all items. Alternatively, you can mention multiple products in your WhatsApp message.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Do I need to create an account to order?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    No account is required! You can browse products and order directly via WhatsApp without creating an account. However, having an account allows you to save your information for faster checkout in the future.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Questions -->
+                    <div class="faq-category" data-category="shipping">
+                        <h5 class="fw-bold mb-3 mt-4">
+                            <i class="fas fa-truck text-primary me-2"></i>Shipping
+                        </h5>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    What are your shipping times?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Shipping times vary by location:</p>
+                                    <ul>
+                                        <li><strong>Local (within 50 miles):</strong> 1-2 business days</li>
+                                        <li><strong>Domestic:</strong> 3-7 business days</li>
+                                        <li><strong>International:</strong> 7-14 business days</li>
+                                    </ul>
+                                    <p class="mb-0">Please note that these are estimates and actual delivery times may vary.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    How much does shipping cost?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>Shipping costs are calculated based on your location and order size:</p>
+                                    <ul>
+                                        <li><strong>Standard Shipping:</strong> $5.99 - $12.99</li>
+                                        <li><strong>Express Shipping:</strong> $15.99 - $24.99</li>
+                                        <li><strong>Free Shipping:</strong> On orders over $100</li>
+                                    </ul>
+                                    <p class="mb-0">Exact shipping costs will be provided when you place your order.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                    Do you ship internationally?
+                                </button>
+                            </h2>
+                            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes, we ship to most countries worldwide. International shipping rates and delivery times vary by destination. Please contact us via WhatsApp for specific rates to your country.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Questions -->
+                    <div class="faq-category" data-category="payment">
+                        <h5 class="fw-bold mb-3 mt-4">
+                            <i class="fas fa-credit-card text-primary me-2"></i>Payment
+                        </h5>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                                    What payment methods do you accept?
+                                </button>
+                            </h2>
+                            <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>We accept various payment methods:</p>
+                                    <ul>
+                                        <li>Bank Transfer / Wire Transfer</li>
+                                        <li>Mobile Money (M-Pesa, etc.)</li>
+                                        <li>Cash on Delivery (selected areas)</li>
+                                        <li>PayPal (for international orders)</li>
+                                    </ul>
+                                    <p class="mb-0">Payment details will be discussed during your WhatsApp conversation.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+                                    Is there an online payment option?
+                                </button>
+                            </h2>
+                            <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Currently, we process payments through WhatsApp conversations rather than direct online payments. This allows us to provide personalized service and discuss payment options that work best for you.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
+                                    Do you offer payment plans?
+                                </button>
+                            </h2>
+                            <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    For orders over $500, we may be able to arrange payment plans. Please discuss this with our team via WhatsApp, and we'll do our best to accommodate your needs.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Returns Questions -->
+                    <div class="faq-category" data-category="returns">
+                        <h5 class="fw-bold mb-3 mt-4">
+                            <i class="fas fa-undo-alt text-primary me-2"></i>Returns & Refunds
+                        </h5>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq10">
+                                    What is your return policy?
+                                </button>
+                            </h2>
+                            <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>We offer a 30-day return policy on most items. To be eligible for a return:</p>
+                                    <ul>
+                                        <li>Item must be unused and in original packaging</li>
+                                        <li>Return must be initiated within 30 days of delivery</li>
+                                        <li>Customer is responsible for return shipping costs</li>
+                                    </ul>
+                                    <p class="mb-0">Contact us via WhatsApp to initiate a return.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq11">
+                                    How do I return an item?
+                                </button>
+                            </h2>
+                            <div id="faq11" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <ol>
+                                        <li>Contact us via WhatsApp with your order number and reason for return</li>
+                                        <li>We'll provide you with a return authorization and shipping address</li>
+                                        <li>Package the item securely with original packaging</li>
+                                        <li>Ship the item back to us (keep tracking information)</li>
+                                        <li>Once received, we'll process your refund within 5-7 business days</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq12">
+                                    When will I get my refund?
+                                </button>
+                            </h2>
+                            <div id="faq12" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Once we receive and inspect your return, we'll process your refund within 5-7 business days. The refund will be issued to your original payment method. You'll receive a confirmation via WhatsApp once the refund is processed.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Still Have Questions -->
+                <div class="card border-0 shadow-sm mt-5 bg-primary text-white">
+                    <div class="card-body p-5 text-center">
+                        <h3 class="fw-bold mb-3">Still Have Questions?</h3>
+                        <p class="lead mb-4">Can't find the answer you're looking for? Contact us directly!</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{{ url_for('main.contact') }}" class="btn btn-light btn-lg px-4">
+                                <i class="fas fa-envelope me-2"></i>Contact Us
+                            </a>
+                            <a href="https://wa.me/{{ config.WHATSAPP_PHONE_NUMBER }}" target="_blank" 
+                               class="btn btn-success btn-lg px-4">
+                                <i class="fab fa-whatsapp me-2"></i>WhatsApp Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterFAQs(category) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Filter FAQs
+    const categories = document.querySelectorAll('.faq-category');
+    if (category === 'all') {
+        categories.forEach(cat => cat.style.display = 'block');
+    } else {
+        categories.forEach(cat => {
+            if (cat.dataset.category === category) {
+                cat.style.display = 'block';
+            } else {
+                cat.style.display = 'none';
+            }
+        });
+    }
+}
+
+// Search functionality
+document.getElementById('faqSearch').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const questions = document.querySelectorAll('.accordion-item');
+    
+    questions.forEach(question => {
+        const questionText = question.querySelector('.accordion-button').textContent.toLowerCase();
+        const answerText = question.querySelector('.accordion-body').textContent.toLowerCase();
+        
+        if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+            question.style.display = 'block';
+            question.closest('.faq-category').style.display = 'block';
+        } else {
+            question.style.display = 'none';
+        }
+    });
+    
+    // Hide empty categories
+    document.querySelectorAll('.faq-category').forEach(category => {
+        const visibleQuestions = category.querySelectorAll('.accordion-item[style="display: block;"]');
+        if (visibleQuestions.length === 0) {
+            category.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

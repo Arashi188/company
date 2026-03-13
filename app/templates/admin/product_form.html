@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} Product - Admin{% endblock %}
+
+{% block content %}
+<section class="admin-product-form py-4">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-{{ 'edit' if action == 'Edit' else 'plus-circle' }} me-2 text-primary"></i>
+                    {{ action }} Product
+                </h1>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Product Name</label>
+                                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), 
+                                            placeholder="Enter product name") }}
+                                {% for error in form.name.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label fw-bold">Price ($)</label>
+                                    {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else ""), 
+                                                placeholder="0.00", step="0.01") }}
+                                    {% for error in form.price.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="category_id" class="form-label fw-bold">Category</label>
+                                    {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else "")) }}
+                                    {% for error in form.category_id.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">Description</label>
+                                {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), 
+                                                  rows="5", placeholder="Enter product description") }}
+                                {% for error in form.description.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="shipping_details" class="form-label fw-bold">Shipping Information</label>
+                                {{ form.shipping_details(class="form-control" + (" is-invalid" if form.shipping_details.errors else ""), 
+                                                       rows="3", placeholder="Enter shipping details") }}
+                                {% for error in form.shipping_details.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="image" class="form-label fw-bold">Product Image</label>
+                                {{ form.image(class="form-control" + (" is-invalid" if form.image.errors else "")) }}
+                                <small class="text-muted">
+                                    Allowed formats: JPG, JPEG, PNG, WEBP. Max size: 16MB.
+                                </small>
+                                {% for error in form.image.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                                
+                                {% if product and product.image %}
+                                <div class="mt-3">
+                                    <p class="mb-2">Current Image:</p>
+                                    <img src="{{ product.image_url }}" alt="{{ product.name }}" 
+                                         style="max-height: 150px;" class="rounded border">
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="fas fa-save me-2"></i>{{ action }} Product
+                                </button>
+                                <a href="{{ url_for('admin.products') }}" class="btn btn-secondary px-4">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-light">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-info-circle me-2 text-primary"></i>Tips
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Use clear, descriptive product names
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Add detailed product descriptions
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Use high-quality images (recommended: 800x800px)
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Include accurate shipping information
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Set competitive prices
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

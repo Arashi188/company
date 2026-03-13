@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - E-Commerce Catalog{% endblock %}
+{% block meta_description %}Get in touch with us via WhatsApp, email, or phone. We're here to help with your questions and orders.{% endblock %}
+
+{% block content %}
+<!-- Contact Hero -->
+<section class="contact-hero bg-primary text-white py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Get in Touch</h1>
+                <p class="lead mb-4">We'd love to hear from you! Whether you have a question about products, orders, or anything else, our team is ready to help.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Methods -->
+<section class="contact-methods py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="icon-circle bg-success text-white mx-auto mb-4">
+                            <i class="fab fa-whatsapp fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">WhatsApp</h4>
+                        <p class="text-muted mb-3">Quickest way to reach us. Click the button below to start a chat.</p>
+                        <p class="h5 mb-3 text-success">+1 234 567 890</p>
+                        <a href="https://wa.me/1234567890" target="_blank" class="btn btn-success w-100">
+                            <i class="fab fa-whatsapp me-2"></i>Chat on WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="icon-circle bg-primary text-white mx-auto mb-4">
+                            <i class="fas fa-envelope fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Email</h4>
+                        <p class="text-muted mb-3">Send us an email and we'll respond within 24 hours.</p>
+                        <p class="h5 mb-3 text-primary">info@example.com</p>
+                        <a href="mailto:info@example.com" class="btn btn-primary w-100">
+                            <i class="fas fa-envelope me-2"></i>Send Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="icon-circle bg-info text-white mx-auto mb-4">
+                            <i class="fas fa-phone fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Phone</h4>
+                        <p class="text-muted mb-3">Call us during business hours for immediate assistance.</p>
+                        <p class="h5 mb-3 text-info">+1 234 567 890</p>
+                        <p class="small text-muted">Mon-Fri: 9AM - 6PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form -->
+<section class="contact-form-section py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold mb-4 text-center">Send Us a Message</h2>
+                        <p class="text-muted text-center mb-5">Fill out the form below and we'll get back to you as soon as possible.</p>
+                        
+                        <form method="POST" action="{{ url_for('main.contact_submit') }}" id="contactForm">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Your Name *</label>
+                                    <input type="text" class="form-control form-control-lg" name="name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Your Email *</label>
+                                    <input type="email" class="form-control form-control-lg" name="email" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Phone Number</label>
+                                    <input type="tel" class="form-control form-control-lg" name="phone" placeholder="Include country code">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Subject *</label>
+                                    <select class="form-select form-select-lg" name="subject" required>
+                                        <option value="">Select a subject</option>
+                                        <option value="product">Product Inquiry</option>
+                                        <option value="order">Order Status</option>
+                                        <option value="shipping">Shipping Question</option>
+                                        <option value="returns">Returns & Refunds</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Message *</label>
+                                    <textarea class="form-control form-control-lg" name="message" rows="5" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="subscribe" id="subscribe" checked>
+                                        <label class="form-check-label" for="subscribe">
+                                            Subscribe to our newsletter for updates and offers
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 text-center mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold">
+                                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map & Location -->
+<section class="map-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Visit Our Store</h2>
+                <p class="lead text-muted mb-4">Come visit us in person! We'd love to meet you.</p>
+                
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-map-marker-alt fa-2x text-primary me-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Address</h5>
+                        <p class="text-muted mb-0">123 Business Street<br>Suite 100<br>City, State 12345<br>United States</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-clock fa-2x text-primary me-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Business Hours</h5>
+                        <p class="text-muted mb-0">
+                            Monday - Friday: 9:00 AM - 6:00 PM<br>
+                            Saturday: 10:00 AM - 4:00 PM<br>
+                            Sunday: Closed
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="d-flex mb-4">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-parking fa-2x text-primary me-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-2">Parking</h5>
+                        <p class="text-muted mb-0">Free parking available in the building garage. Enter from Main Street.</p>
+                    </div>
+                </div>
+                
+                <div class="social-links mt-4">
+                    <h5 class="fw-bold mb-3">Follow Us</h5>
+                    <a href="#" class="btn btn-outline-primary btn-lg me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="btn btn-outline-primary btn-lg me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="btn btn-outline-primary btn-lg me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="btn btn-outline-primary btn-lg"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="map-container rounded-3 overflow-hidden shadow-lg">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343008!2d-73.98510768458427!3d40.75889697932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1644262070686!5m2!1sen!2sus" 
+                            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Preview -->
+<section class="faq-preview bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-6 fw-bold mb-4">Frequently Asked Questions</h2>
+                <p class="lead text-muted">Quick answers to common questions</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-question-circle text-primary me-2"></i>
+                            How do I place an order?
+                        </h5>
+                        <p class="text-muted mb-0">Simply browse our products, click on "View Details", then click the "Order via WhatsApp" button. You'll be redirected to WhatsApp with a pre-filled message.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-question-circle text-primary me-2"></i>
+                            What payment methods do you accept?
+                        </h5>
+                        <p class="text-muted mb-0">We accept payments via bank transfer, mobile money, and cash on delivery. Payment details will be discussed via WhatsApp after ordering.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-question-circle text-primary me-2"></i>
+                            How long does shipping take?
+                        </h5>
+                        <p class="text-muted mb-0">Delivery typically takes 2-3 business days for local orders and 5-7 business days for international shipping.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-question-circle text-primary me-2"></i>
+                            Can I return a product?
+                        </h5>
+                        <p class="text-muted mb-0">Yes, we have a 30-day return policy. Contact us via WhatsApp to initiate a return.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.faq') }}" class="btn btn-link">View all FAQs <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    submitBtn.disabled = true;
+    
+    // Submit form via AJAX
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showNotification('Message sent successfully! We\'ll get back to you soon.', 'success');
+            this.reset();
+        } else {
+            showNotification('Error sending message. Please try again.', 'danger');
+        }
+    })
+    .catch(error => {
+        showNotification('Network error. Please try again.', 'danger');
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

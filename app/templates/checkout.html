@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Complete Your Order{% endblock %}
+
+{% block content %}
+<section class="checkout-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold">Complete Your Order</h1>
+                    <p class="lead text-muted">You'll be redirected to WhatsApp to complete your order</p>
+                </div>
+                
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <!-- Order Summary -->
+                        <div class="order-summary mb-4">
+                            <h5 class="fw-bold mb-3">Order Summary</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in cart.items %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" 
+                                                         style="width: 50px; height: 50px; object-fit: cover;" 
+                                                         class="rounded-3 me-2">
+                                                    <div>
+                                                        <strong>{{ item.product.name }}</strong>
+                                                        <small class="text-muted d-block">ID: {{ item.product.id }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ item.product.formatted_price }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td class="fw-bold">{{ item.total_formatted }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                            <td><strong>{{ subtotal }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end">Shipping:</td>
+                                            <td>{{ shipping_cost }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                            <td><strong class="text-primary h5">{{ total }}</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Customer Information -->
+                        <div class="customer-info mb-4">
+                            <h5 class="fw-bold mb-3">Your Information</h5>
+                            <form id="checkoutForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" name="name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone Number *</label>
+                                        <input type="tel" class="form-control" name="phone" 
+                                               placeholder="Include country code" required>
+                                        <small class="text-muted">We'll use this for WhatsApp contact</small>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Email (Optional)</label>
+                                        <input type="email" class="form-control" name="email">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Shipping Address *</label>
+                                        <textarea class="form-control" name="address" rows="2" required></textarea>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">City *</label>
+                                        <input type="text" class="form-control" name="city" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">State/Province *</label>
+                                        <input type="text" class="form-control" name="state" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">ZIP Code *</label>
+                                        <input type="text" class="form-control" name="zip" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Additional Notes</label>
+                                        <textarea class="form-control" name="notes" rows="2" 
+                                                  placeholder="Special instructions, delivery preferences, etc."></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- WhatsApp Order Button -->
+                        <div class="whatsapp-checkout text-center">
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-info-circle"></i>
+                                By clicking the button below, you'll be redirected to WhatsApp with your order details.
+                            </p>
+                            <button class="btn btn-success btn-lg px-5 py-3 fw-bold" onclick="processOrder()">
+                                <i class="fab fa-whatsapp me-2 fa-lg"></i>
+                                Send Order via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Trust Badges -->
+                <div class="row mt-5 text-center">
+                    <div class="col-4">
+                        <i class="fas fa-lock fa-2x text-primary mb-2"></i>
+                        <h6 class="fw-bold">Secure Checkout</h6>
+                        <small class="text-muted">Your info is safe</small>
+                    </div>
+                    <div class="col-4">
+                        <i class="fab fa-whatsapp fa-2x text-success mb-2"></i>
+                        <h6 class="fw-bold">WhatsApp Ordering</h6>
+                        <small class="text-muted">Direct chat with us</small>
+                    </div>
+                    <div class="col-4">
+                        <i class="fas fa-headset fa-2x text-info mb-2"></i>
+                        <h6 class="fw-bold">24/7 Support</h6>
+                        <small class="text-muted">Always here to help</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function processOrder() {
+    // Get form data
+    const form = document.getElementById('checkoutForm');
+    const formData = new FormData(form);
+    
+    // Validate required fields
+    const required = ['name', 'phone', 'address', 'city', 'state', 'zip'];
+    for (let field of required) {
+        if (!formData.get(field)) {
+            alert(`Please fill in your ${field.replace('_', ' ')}`);
+            return;
+        }
+    }
+    
+    // Build order message
+    let message = "🛍️ *NEW ORDER*\n\n";
+    message += "*Customer Information*\n";
+    message += `Name: ${formData.get('name')}\n`;
+    message += `Phone: ${formData.get('phone')}\n`;
+    if (formData.get('email')) message += `Email: ${formData.get('email')}\n`;
+    message += `\n*Shipping Address*\n`;
+    message += `${formData.get('address')}\n`;
+    message += `${formData.get('city')}, ${formData.get('state')} ${formData.get('zip')}\n\n`;
+    
+    message += "*Order Details*\n";
+    {% for item in cart.items %}
+    message += `• {{ item.product.name }} ({{ item.product.id }})\n`;
+    message += `  Quantity: {{ item.quantity }} x {{ item.product.formatted_price }} = {{ item.total_formatted }}\n`;
+    {% endfor %}
+    
+    message += `\n*Subtotal:* {{ subtotal }}\n`;
+    message += `*Shipping:* {{ shipping_cost }}\n`;
+    message += `*TOTAL:* {{ total }}\n`;
+    
+    if (formData.get('notes')) {
+        message += `\n*Notes:* ${formData.get('notes')}\n`;
+    }
+    
+    message += `\nThank you! We'll respond shortly.`;
+    
+    // Encode message for URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Get WhatsApp number from config
+    const phoneNumber = "{{ config.WHATSAPP_PHONE_NUMBER }}";
+    
+    // Create WhatsApp URL
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, '_blank');
+    
+    // Show success message
+    alert('Order sent to WhatsApp! Please wait for confirmation from our team.');
+    
+    // Optional: Clear cart or redirect
+    // window.location.href = "{{ url_for('main.products') }}";
+}
+</script>
+{% endblock %}

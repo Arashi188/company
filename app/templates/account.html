@@ -1,0 +1,659 @@
+{% extends "base.html" %}
+
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+<section class="account-page py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-user-circle text-primary me-2"></i>My Account
+                </h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar-circle bg-primary text-white mx-auto mb-3">
+                            <span class="avatar-initials">{{ current_user.username[:2].upper() }}</span>
+                        </div>
+                        <h5 class="fw-bold mb-1">{{ current_user.username }}</h5>
+                        <p class="text-muted small mb-3">{{ current_user.email }}</p>
+                        <span class="badge bg-primary">Member since {{ current_user.created_at.strftime('%Y') }}</span>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="#overview" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                            <i class="fas fa-tachometer-alt me-2"></i>Overview
+                        </a>
+                        <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="fas fa-shopping-bag me-2"></i>My Orders
+                        </a>
+                        <a href="#wishlist" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="fas fa-heart me-2"></i>Wishlist
+                        </a>
+                        <a href="#profile" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="fas fa-user-edit me-2"></i>Profile Settings
+                        </a>
+                        <a href="#addresses" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="fas fa-map-marker-alt me-2"></i>Addresses
+                        </a>
+                        <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="tab-content">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane active" id="overview">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-shopping-bag fa-3x text-primary mb-3"></i>
+                                        <h3 class="fw-bold">{{ order_count }}</h3>
+                                        <p class="text-muted mb-0">Total Orders</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                                        <h3 class="fw-bold">{{ wishlist_count }}</h3>
+                                        <p class="text-muted mb-0">Wishlist Items</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-clock fa-3x text-success mb-3"></i>
+                                        <h3 class="fw-bold">{{ pending_orders }}</h3>
+                                        <p class="text-muted mb-0">Pending Orders</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Orders -->
+                            <div class="col-12 mt-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 fw-bold">Recent Orders</h5>
+                                        <a href="#orders" class="btn btn-sm btn-primary" onclick="showTab('orders')">View All</a>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Order #</th>
+                                                        <th>Date</th>
+                                                        <th>Items</th>
+                                                        <th>Total</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for order in recent_orders %}
+                                                    <tr>
+                                                        <td>#{{ order.id }}</td>
+                                                        <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                                        <td>{{ order.items|length }}</td>
+                                                        <td>${{ "%.2f"|format(order.total) }}</td>
+                                                        <td>
+                                                            <span class="badge bg-{{ order.status_color }}">
+                                                                {{ order.status }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary" 
+                                                                    onclick="viewOrder({{ order.id }})">
+                                                                View
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    {% else %}
+                                                    <tr>
+                                                        <td colspan="6" class="text-center py-4">
+                                                            <p class="text-muted mb-0">No orders yet</p>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Tab -->
+                    <div class="tab-pane" id="orders">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-bold">Order History</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if orders %}
+                                <div class="accordion" id="ordersAccordion">
+                                    {% for order in orders %}
+                                    <div class="accordion-item border-0 mb-3">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed bg-light" type="button" 
+                                                    data-bs-toggle="collapse" data-bs-target="#order{{ order.id }}">
+                                                <div class="row w-100">
+                                                    <div class="col-md-3">
+                                                        <strong>Order #{{ order.id }}</strong>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        {{ order.created_at.strftime('%Y-%m-%d') }}
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        ${{ "%.2f"|format(order.total) }}
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <span class="badge bg-{{ order.status_color }}">
+                                                            {{ order.status }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <span class="text-muted">{{ order.items|length }} items</span>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        </h2>
+                                        <div id="order{{ order.id }}" class="accordion-collapse collapse" 
+                                             data-bs-parent="#ordersAccordion">
+                                            <div class="accordion-body">
+                                                <div class="order-details">
+                                                    {% for item in order.items %}
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <img src="{{ item.product.image_url }}" 
+                                                             alt="{{ item.product.name }}" 
+                                                             style="width: 60px; height: 60px; object-fit: cover;"
+                                                             class="rounded-3 me-3">
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                                                            <p class="small text-muted mb-0">
+                                                                Quantity: {{ item.quantity }} x ${{ "%.2f"|format(item.price) }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <strong>${{ "%.2f"|format(item.total) }}</strong>
+                                                            <button class="btn btn-sm btn-outline-success ms-3"
+                                                                    onclick="reorderItem({{ item.product.id }})">
+                                                                Reorder
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6>Shipping Address</h6>
+                                                        <p class="small">{{ order.shipping_address }}</p>
+                                                    </div>
+                                                    <div class="col-md-6 text-end">
+                                                        <a href="https://wa.me/{{ config.WHATSAPP_PHONE_NUMBER }}" 
+                                                           target="_blank" class="btn btn-success">
+                                                            <i class="fab fa-whatsapp me-2"></i>Track Order
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-shopping-bag fa-4x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No orders yet</h5>
+                                    <p class="text-muted mb-3">Start shopping to see your orders here!</p>
+                                    <a href="{{ url_for('main.products') }}" class="btn btn-primary">
+                                        Browse Products
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wishlist Tab -->
+                    <div class="tab-pane" id="wishlist">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold">My Wishlist</h5>
+                                <button class="btn btn-sm btn-danger" onclick="clearWishlist()">
+                                    <i class="fas fa-trash-alt me-2"></i>Clear All
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                {% if wishlist_items %}
+                                <div class="row g-3">
+                                    {% for item in wishlist_items %}
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center border rounded-3 p-3">
+                                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" 
+                                                 style="width: 80px; height: 80px; object-fit: cover;" 
+                                                 class="rounded-3 me-3">
+                                            <div class="flex-grow-1">
+                                                <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                                                <p class="text-primary fw-bold mb-2">{{ item.product.formatted_price }}</p>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button class="btn btn-outline-success" 
+                                                            onclick="addToCart({{ item.product.id }})">
+                                                        <i class="fas fa-cart-plus"></i>
+                                                    </button>
+                                                    <button class="btn btn-outline-danger" 
+                                                            onclick="removeFromWishlist({{ item.product.id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-5">
+                                    <i class="far fa-heart fa-4x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Your wishlist is empty</h5>
+                                    <p class="text-muted mb-3">Save items you love to your wishlist!</p>
+                                    <a href="{{ url_for('main.products') }}" class="btn btn-primary">
+                                        Browse Products
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Settings Tab -->
+                    <div class="tab-pane" id="profile">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-bold">Profile Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="{{ url_for('main.update_profile') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Username</label>
+                                            <input type="text" class="form-control" value="{{ current_user.username }}" readonly disabled>
+                                            <small class="text-muted">Username cannot be changed</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Email</label>
+                                            <input type="email" class="form-control" name="email" value="{{ current_user.email }}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">First Name</label>
+                                            <input type="text" class="form-control" name="first_name" value="{{ current_user.first_name }}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Last Name</label>
+                                            <input type="text" class="form-control" name="last_name" value="{{ current_user.last_name }}">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">Phone Number</label>
+                                            <input type="tel" class="form-control" name="phone" value="{{ current_user.phone }}">
+                                        </div>
+                                        
+                                        <hr class="my-3">
+                                        
+                                        <h6 class="fw-bold">Change Password</h6>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Current Password</label>
+                                            <input type="password" class="form-control" name="current_password">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" class="form-control" name="new_password">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Confirm Password</label>
+                                            <input type="password" class="form-control" name="confirm_password">
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Addresses Tab -->
+                    <div class="tab-pane" id="addresses">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold">Saved Addresses</h5>
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                    <i class="fas fa-plus-circle me-2"></i>Add New Address
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                {% if addresses %}
+                                <div class="row g-3">
+                                    {% for address in addresses %}
+                                    <div class="col-md-6">
+                                        <div class="card border">
+                                            <div class="card-body">
+                                                {% if address.is_default %}
+                                                <span class="badge bg-success mb-2">Default</span>
+                                                {% endif %}
+                                                <h6 class="fw-bold">{{ address.name }}</h6>
+                                                <p class="small mb-1">{{ address.address_line1 }}</p>
+                                                {% if address.address_line2 %}
+                                                <p class="small mb-1">{{ address.address_line2 }}</p>
+                                                {% endif %}
+                                                <p class="small mb-1">{{ address.city }}, {{ address.state }} {{ address.zip_code }}</p>
+                                                <p class="small mb-2">{{ address.country }}</p>
+                                                <p class="small text-muted">Phone: {{ address.phone }}</p>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button class="btn btn-outline-primary" onclick="editAddress({{ address.id }})">
+                                                        Edit
+                                                    </button>
+                                                    {% if not address.is_default %}
+                                                    <button class="btn btn-outline-success" onclick="setDefaultAddress({{ address.id }})">
+                                                        Set Default
+                                                    </button>
+                                                    <button class="btn btn-outline-danger" onclick="deleteAddress({{ address.id }})">
+                                                        Delete
+                                                    </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-map-marker-alt fa-4x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No saved addresses</h5>
+                                    <p class="text-muted mb-3">Add an address to make checkout faster!</p>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                        Add Address
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Tab -->
+                    <div class="tab-pane" id="notifications">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-bold">Notification Preferences</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="{{ url_for('main.update_notifications') }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="email_orders" 
+                                                   id="emailOrders" {% if preferences.email_orders %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="emailOrders">
+                                                Order Updates via Email
+                                            </label>
+                                            <p class="small text-muted">Receive order confirmations and tracking info via email</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="whatsapp_orders" 
+                                                   id="whatsappOrders" {% if preferences.whatsapp_orders %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="whatsappOrders">
+                                                Order Updates via WhatsApp
+                                            </label>
+                                            <p class="small text-muted">Receive order confirmations and tracking info via WhatsApp</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="promotions" 
+                                                   id="promotions" {% if preferences.promotions %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="promotions">
+                                                Promotional Emails
+                                            </label>
+                                            <p class="small text-muted">Receive offers, discounts, and new product announcements</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="newsletter" 
+                                                   id="newsletter" {% if preferences.newsletter %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="newsletter">
+                                                Newsletter
+                                            </label>
+                                            <p class="small text-muted">Subscribe to our weekly newsletter</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">
+                                        Save Preferences
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add New Address</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAddressForm">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address Line 1</label>
+                        <input type="text" class="form-control" name="address_line1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address Line 2</label>
+                        <input type="text" class="form-control" name="address_line2">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" name="city" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">State</label>
+                            <input type="text" class="form-control" name="state" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">ZIP Code</label>
+                            <input type="text" class="form-control" name="zip_code" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Country</label>
+                            <select class="form-select" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_default" id="isDefault">
+                            <label class="form-check-label" for="isDefault">
+                                Set as default address
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveAddress()">Save Address</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-initials {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+}
+
+.tab-pane {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTab(tabId) {
+    const tab = new bootstrap.Tab(document.querySelector(`[href="#${tabId}"]`));
+    tab.show();
+}
+
+function viewOrder(orderId) {
+    showTab('orders');
+    // Expand specific order accordion
+    const accordion = document.getElementById(`order${orderId}`);
+    if (accordion) {
+        new bootstrap.Collapse(accordion, { toggle: true });
+    }
+}
+
+function saveAddress() {
+    const form = document.getElementById('addAddressForm');
+    const formData = new FormData(form);
+    
+    fetch('/account/addresses/add', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error saving address');
+        }
+    });
+}
+
+function editAddress(addressId) {
+    window.location.href = `/account/addresses/edit/${addressId}`;
+}
+
+function setDefaultAddress(addressId) {
+    fetch(`/account/addresses/set-default/${addressId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function deleteAddress(addressId) {
+    if (confirm('Delete this address?')) {
+        fetch(`/account/addresses/delete/${addressId}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+}
+
+function reorderItem(productId) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "{{ url_for('main.cart') }}";
+        }
+    });
+}
+</script>
+{% endblock %}

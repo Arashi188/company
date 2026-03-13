@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Shipping Information{% endblock %}
+
+{% block content %}
+<section class="shipping-page py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="row mb-5">
+            <div class="col text-center">
+                <h1 class="display-5 fw-bold">Shipping Information</h1>
+                <p class="lead text-muted">Everything you need to know about our shipping policies</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Shipping Methods -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-truck me-2"></i>Shipping Methods</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>Delivery Time</th>
+                                        <th>Cost</th>
+                                        <th>Tracking</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Standard Shipping</strong></td>
+                                        <td>3-7 business days</td>
+                                        <td>$5.99 - $12.99</td>
+                                        <td><span class="badge bg-success">Included</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Express Shipping</strong></td>
+                                        <td>1-3 business days</td>
+                                        <td>$15.99 - $24.99</td>
+                                        <td><span class="badge bg-success">Included</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Free Shipping</strong></td>
+                                        <td>5-10 business days</td>
+                                        <td>$0.00</td>
+                                        <td><span class="badge bg-success">Included</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>International Shipping</strong></td>
+                                        <td>7-14 business days</td>
+                                        <td>Calculated at checkout</td>
+                                        <td><span class="badge bg-success">Included</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Free Shipping Threshold -->
+                <div class="card border-0 shadow-sm mb-4 bg-success text-white">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-gift fa-3x mb-3"></i>
+                        <h4 class="fw-bold mb-2">Free Shipping on Orders Over $100</h4>
+                        <p class="mb-0">All domestic orders over $100 qualify for free standard shipping automatically!</p>
+                    </div>
+                </div>
+
+                <!-- Shipping Zones -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-globe me-2"></i>Shipping Zones</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Domestic (USA)</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>All 50 states</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Puerto Rico</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>US Virgin Islands</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Military APO/FPO</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">International</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>Canada</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>United Kingdom</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Australia</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>European Union</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Japan</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Singapore</li>
+                                </ul>
+                                <p class="small text-muted mt-2">*Contact us for shipping to other countries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Time -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-clock me-2"></i>Order Processing</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 text-center mb-3">
+                                <div class="p-3 bg-light rounded-3">
+                                    <h2 class="fw-bold text-primary">24-48</h2>
+                                    <p class="mb-0">Hours processing time</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-center mb-3">
+                                <div class="p-3 bg-light rounded-3">
+                                    <h2 class="fw-bold text-primary">Same Day</h2>
+                                    <p class="mb-0">Shipping for orders before 2 PM EST</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="small text-muted mt-2">Orders placed after 2 PM EST on Friday will be processed on Monday.</p>
+                    </div>
+                </div>
+
+                <!-- Tracking Information -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-search me-2"></i>Order Tracking</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Once your order ships, you'll receive:</p>
+                        <ul>
+                            <li>A WhatsApp message with tracking number</li>
+                            <li>Email confirmation with tracking link</li>
+                            <li>SMS updates (if opted in)</li>
+                        </ul>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Tracking numbers typically become active within 24 hours of shipping.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Restrictions -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Shipping Restrictions</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Please note the following restrictions:</p>
+                        <ul>
+                            <li>P.O. Box deliveries limited to USPS only</li>
+                            <li>Some items may have shipping restrictions due to size/weight</li>
+                            <li>International orders may be subject to customs clearance</li>
+                            <li>Hazardous materials cannot be shipped internationally</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- FAQ Section -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-question-circle me-2"></i>Shipping FAQs</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="shippingFAQ">
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#shipFAQ1">
+                                        Can I change my shipping address after ordering?
+                                    </button>
+                                </h2>
+                                <div id="shipFAQ1" class="accordion-collapse collapse show" data-bs-parent="#shippingFAQ">
+                                    <div class="accordion-body">
+                                        Yes, contact us immediately via WhatsApp. If the order hasn't shipped yet, we can update the address. Once shipped, we cannot change the delivery address.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#shipFAQ2">
+                                        Do you ship to my country?
+                                    </button>
+                                </h2>
+                                <div id="shipFAQ2" class="accordion-collapse collapse" data-bs-parent="#shippingFAQ">
+                                    <div class="accordion-body">
+                                        We ship to most countries worldwide. If your country isn't listed, please contact us via WhatsApp to check availability and rates.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#shipFAQ3">
+                                        What happens if my package is lost?
+                                    </button>
+                                </h2>
+                                <div id="shipFAQ3" class="accordion-collapse collapse" data-bs-parent="#shippingFAQ">
+                                    <div class="accordion-body">
+                                        If your package is lost in transit, contact us immediately. We'll file a claim with the carrier and either reship your order or issue a refund, depending on the situation.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#shipFAQ4">
+                                        Do I need to pay customs fees?
+                                    </button>
+                                </h2>
+                                <div id="shipFAQ4" class="accordion-collapse collapse" data-bs-parent="#shippingFAQ">
+                                    <div class="accordion-body">
+                                        International orders may be subject to import duties, taxes, and customs fees. These are the responsibility of the customer and vary by country.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Support -->
+                <div class="text-center mt-5">
+                    <h5>Still have questions about shipping?</h5>
+                    <p class="text-muted mb-3">Our team is here to help!</p>
+                    <a href="https://wa.me/{{ config.WHATSAPP_PHONE_NUMBER }}" target="_blank" class="btn btn-success btn-lg">
+                        <i class="fab fa-whatsapp me-2"></i>Contact via WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

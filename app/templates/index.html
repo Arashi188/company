@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}Home - E-Commerce Catalog{% endblock %}
+
+{% block content %}
+<!-- Development Mode Alert - Remove in Production -->
+{% if config.DEBUG %}
+<div class="container mt-3">
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Development Mode:</strong> Quick access to admin panel
+        </div>
+        <div>
+            <span class="badge bg-dark me-2">Default: admin / ChangeMe123!</span>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-primary me-2">
+                <i class="fas fa-sign-in-alt me-1"></i>Admin Login
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-success">
+                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Hero Section with Admin Access -->
+<section class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Welcome to E-Commerce Catalog</h1>
+                <p class="lead mb-4">Discover amazing products and order directly through WhatsApp. Fast, easy, and convenient shopping experience.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('main.products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+                        <i class="fas fa-shopping-bag me-2"></i>Shop Now
+                    </a>
+                    
+                    {% if current_user.is_authenticated and current_user.is_admin() %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                    </a>
+                    {% elif not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-lock me-2"></i>Admin Login
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('main.faq') }}" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-question-circle me-2"></i>FAQ
+                    </a>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="row mt-5">
+                    <div class="col-4">
+                        <h3 class="fw-bold mb-0">500+</h3>
+                        <small>Products</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="fw-bold mb-0">10k+</h3>
+                        <small>Happy Customers</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="fw-bold mb-0">24/7</h3>
+                        <small>WhatsApp Support</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static "uploads/hero.jpg" %}" alt="Hero Image" class="img-fluid rounded-3 shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Quick Actions - Only visible to admins -->
+{% if current_user.is_authenticated and current_user.is_admin() %}
+<section class="admin-quick-actions py-4 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-bolt text-primary me-2"></i>Quick Admin Actions
+                    </h5>
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-primary">
+                        View Full Dashboard <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-3 col-6">
+                        <a href="{{ url_for('admin.add_product') }}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="fas fa-plus-circle mb-2 d-block fa-2x"></i>
+                            <span>Add Product</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <a href="{{ url_for('admin.products') }}" class="btn btn-outline-success w-100 py-3">
+                            <i class="fas fa-edit mb-2 d-block fa-2x"></i>
+                            <span>Manage Products</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <a href="{{ url_for('admin.orders') }}" class="btn btn-outline-warning w-100 py-3">
+                            <i class="fas fa-shopping-cart mb-2 d-block fa-2x"></i>
+                            <span>View Orders</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <a href="{{ url_for('admin.categories') }}" class="btn btn-outline-info w-100 py-3">
+                            <i class="fas fa-tags mb-2 d-block fa-2x"></i>
+                            <span>Categories</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products Section -->
+<section class="featured-products py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Featured Products</h2>
+            <p class="text-muted">Check out our most popular items</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 product-card border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-2">{{ product.category.name }}</span>
+                        <button class="btn position-absolute top-0 start-0 m-2 bg-white rounded-circle" 
+                                onclick="addToWishlist({{ product.id }})" title="Add to wishlist">
+                            <i class="far fa-heart text-danger"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ product.name }}</h5>
+                        <p class="card-text text-muted small">{{ product.description[:80] }}...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">{{ product.formatted_price }}</span>
+                            <div class="btn-group">
+                                <a href="{{ url_for('main.product_detail', slug=product.slug) }}" 
+                                   class="btn btn-outline-primary btn-sm">View</a>
+                                <button class="btn btn-success btn-sm" onclick="quickAddToCart({{ product.id }})">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No featured products available.</p>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <a href="{{ url_for('admin.add_product') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i>Add Your First Product
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.products') }}" class="btn btn-outline-primary btn-lg">
+                View All Products <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Shop by Category</h2>
+            <p class="text-muted">Browse products by category</p>
+            {% if current_user.is_authenticated and current_user.is_admin() %}
+            <a href="{{ url_for('admin.add_category') }}" class="btn btn-sm btn-outline-primary mt-2">
+                <i class="fas fa-plus-circle me-2"></i>Add New Category
+            </a>
+            {% endif %}
+        </div>
+        
+        <div class="row g-4">
+            {% for category in categories %}
+            <div class="col-md-4 col-lg-2">
+                <a href="{{ url_for('main.products', category=category.slug) }}" 
+                   class="text-decoration-none">
+                    <div class="card category-card border-0 shadow-sm text-center p-4">
+                        <div class="category-icon mb-3">
+                            <i class="fas fa-tag fa-3x text-primary"></i>
+                        </div>
+                        <h6 class="fw-bold mb-2">{{ category.name }}</h6>
+                        <p class="small text-muted mb-0">{{ category.products.count() }} items</p>
+                    </div>
+                </a>
+            </div>
+            {% else %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No categories available.</p>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <a href="{{ url_for('admin.add_category') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i>Create First Category
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section py-5" id="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://via.placeholder.com/600x400" alt="About Us" class="img-fluid rounded-3 shadow">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold mb-4">About Our Store</h2>
+                <p class="lead mb-4">We are dedicated to providing quality products with excellent customer service.</p>
+                <p class="text-muted mb-4">Our mission is to make shopping easy and convenient. With our WhatsApp ordering system, you can browse products and place orders directly through WhatsApp, making the process seamless and efficient.</p>
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-truck fa-2x text-primary me-3"></i>
+                            <div>
+                                <h6 class="mb-0">Fast Delivery</h6>
+                                <small class="text-muted">Quick shipping</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-headset fa-2x text-primary me-3"></i>
+                            <div>
+                                <h6 class="mb-0">24/7 Support</h6>
+                                <small class="text-muted">Via WhatsApp</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ url_for('main.faq') }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-question-circle me-2"></i>FAQ
+                    </a>
+                    <a href="{{ url_for('main.shipping') }}" class="btn btn-outline-info">
+                        <i class="fas fa-truck me-2"></i>Shipping Info
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section bg-light py-5" id="contact">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Contact Us</h2>
+            <p class="text-muted">Get in touch with us</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm text-center p-4 h-100">
+                    <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                    <h5>Visit Us</h5>
+                    <p class="text-muted mb-0">123 Business Street<br>City, State 12345</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm text-center p-4 h-100">
+                    <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+                    <h5>Email Us</h5>
+                    <p class="text-muted mb-0">
+                        <a href="mailto:info@example.com" class="text-decoration-none">info@example.com</a><br>
+                        <a href="mailto:support@example.com" class="text-decoration-none">support@example.com</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm text-center p-4 h-100">
+                    <i class="fab fa-whatsapp fa-3x text-success mb-3"></i>
+                    <h5>WhatsApp</h5>
+                    <p class="text-muted mb-0">
+                        <a href="https://wa.me/{{ config.WHATSAPP_PHONE_NUMBER }}" target="_blank" class="text-decoration-none">
+                            +1 234 567 890
+                        </a><br>
+                        <small>Available 24/7</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="row mt-4">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Send us a Message</h5>
+                        <form method="POST" action="{{ url_for('main.contact_submit') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control" name="message" rows="4" placeholder="Your Message" required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h3 class="fw-bold mb-3">Subscribe to Our Newsletter</h3>
+                <p class="mb-4">Get the latest updates on new products and special offers</p>
+                <form class="row g-3 justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                            <button class="btn btn-light btn-lg" type="submit">Subscribe</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addToWishlist(productId) {
+    fetch('/wishlist/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({ product_id: productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Added to wishlist!', 'success');
+        }
+    });
+}
+
+function quickAddToCart(productId) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Added to cart!', 'success');
+            // Update cart count in navbar
+            location.reload();
+        }
+    });
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

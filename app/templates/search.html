@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - "{{ query }}"{% endblock %}
+
+{% block content %}
+<section class="search-results py-5">
+    <div class="container">
+        <!-- Search Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-search me-2 text-primary"></i>Search Results
+                </h1>
+                <p class="text-muted">
+                    Found {{ total_results }} result{% if total_results != 1 %}s{% endif %} for "{{ query }}"
+                </p>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <form action="{{ url_for('main.search') }}" method="get" class="d-flex">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control form-control-lg" 
+                               placeholder="Search products..." value="{{ query }}">
+                        <button class="btn btn-primary btn-lg" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="btn-group" role="group">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-sort me-2"></i>Sort by
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('main.search', q=query, sort='relevance') }}">Relevance</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('main.search', q=query, sort='price_asc') }}">Price: Low to High</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('main.search', q=query, sort='price_desc') }}">Price: High to Low</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('main.search', q=query, sort='newest') }}">Newest First</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('main.search', q=query, sort='name_asc') }}">Name: A to Z</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Filters -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" onchange="filterByCategory(this.value)">
+                                    <option value="">All Categories</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Price Range</label>
+                                <select class="form-select" onchange="filterByPrice(this.value)">
+                                    <option value="">All Prices</option>
+                                    <option value="0-25">Under $25</option>
+                                    <option value="25-50">$25 - $50</option>
+                                    <option value="50-100">$50 - $100</option>
+                                    <option value="100-200">$100 - $200</option>
+                                    <option value="200+">$200+</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Availability</label>
+                                <select class="form-select" onchange="filterByAvailability(this.value)">
+                                    <option value="">All</option>
+                                    <option value="in_stock">In Stock</option>
+                                    <option value="out_of_stock">Out of Stock</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times me-2"></i>Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Grid -->
+        {% if products %}
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card h-100 product-card border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" 
+                             style="height: 200px; object-fit: cover;">
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-2">
+                            {{ product.category.name }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold">{{ product.name }}</h6>
+                        <p class="card-text text-muted small">{{ product.description[:60] }}...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">{{ product.formatted_price }}</span>
+                            <div>
+                                <a href="{{ url_for('main.product_detail', slug=product.slug) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                                <button class="btn btn-sm btn-success" onclick="quickAddToCart({{ product.id }})">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.search', q=query, page=pagination.prev_num, sort=sort) }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('main.search', q=query, page=page_num, sort=sort) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.search', q=query, page=pagination.next_num, sort=sort) }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <!-- No Results -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm text-center py-5">
+                    <div class="card-body">
+                        <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                        <h3 class="text-muted">No products found</h3>
+                        <p class="text-muted mb-4">
+                            We couldn't find any products matching "{{ query }}"
+                        </p>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <div class="list-group">
+                                    <h6 class="list-group-header">Suggestions:</h6>
+                                    <a href="{{ url_for('main.products') }}" class="list-group-item list-group-item-action">
+                                        <i class="fas fa-box me-2"></i>Browse all products
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action" onclick="history.back()">
+                                        <i class="fas fa-arrow-left me-2"></i>Go back
+                                    </a>
+                                    <a href="{{ url_for('main.index') }}" class="list-group-item list-group-item-action">
+                                        <i class="fas fa-home me-2"></i>Go to homepage
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterByCategory(categoryId) {
+    const url = new URL(window.location.href);
+    if (categoryId) {
+        url.searchParams.set('category', categoryId);
+    } else {
+        url.searchParams.delete('category');
+    }
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+
+function filterByPrice(range) {
+    const url = new URL(window.location.href);
+    if (range) {
+        url.searchParams.set('price', range);
+    } else {
+        url.searchParams.delete('price');
+    }
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+
+function filterByAvailability(availability) {
+    const url = new URL(window.location.href);
+    if (availability) {
+        url.searchParams.set('availability', availability);
+    } else {
+        url.searchParams.delete('availability');
+    }
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+
+function clearFilters() {
+    window.location.href = "{{ url_for('main.search', q=query) }}";
+}
+
+function quickAddToCart(productId) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Product added to cart!', 'success');
+        } else {
+            showNotification('Error adding product to cart', 'danger');
+        }
+    });
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

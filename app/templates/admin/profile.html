@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Admin{% endblock %}
+
+{% block content %}
+<section class="admin-profile py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Profile Header -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body text-center p-5">
+                        <div class="profile-avatar mb-4">
+                            <div class="avatar-circle bg-primary text-white mx-auto">
+                                <span class="avatar-initials">{{ current_user.username[:2].upper() }}</span>
+                            </div>
+                        </div>
+                        <h2 class="fw-bold">{{ current_user.username }}</h2>
+                        <p class="text-muted mb-2">{{ current_user.email }}</p>
+                        <span class="badge bg-primary mb-3">{{ current_user.role|title }}</span>
+                        <p class="text-muted small">
+                            <i class="far fa-calendar-alt me-1"></i>
+                            Member since {{ current_user.created_at.strftime('%B %d, %Y') }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-user-circle me-2 text-primary"></i>Profile Information
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ url_for('admin.update_profile') }}">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label fw-bold">Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" value="{{ current_user.username }}" readonly disabled>
+                                    <small class="text-muted">Username cannot be changed</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label fw-bold">Email</label>
+                                <div class="col-sm-9">
+                                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                                    {% for error in form.email.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <h6 class="fw-bold mb-3">Change Password</h6>
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label fw-bold">Current Password</label>
+                                <div class="col-sm-9">
+                                    {{ form.current_password(class="form-control" + (" is-invalid" if form.current_password.errors else "")) }}
+                                    {% for error in form.current_password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label fw-bold">New Password</label>
+                                <div class="col-sm-9">
+                                    {{ form.new_password(class="form-control" + (" is-invalid" if form.new_password.errors else "")) }}
+                                    {% for error in form.new_password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                    <small class="text-muted">Leave blank to keep current password</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label fw-bold">Confirm Password</label>
+                                <div class="col-sm-9">
+                                    {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else "")) }}
+                                    {% for error in form.confirm_password.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-sm-9 offset-sm-3">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="fas fa-save me-2"></i>Update Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Account Activity -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-history me-2 text-primary"></i>Recent Activity
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            {% for activity in recent_activities %}
+                            <div class="timeline-item">
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <div class="timeline-icon bg-{{ activity.color }}">
+                                            <i class="fas fa-{{ activity.icon }}"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <p class="mb-0">{{ activity.description }}</p>
+                                                <small class="text-muted">{{ activity.time }}</small>
+                                            </div>
+                                            <span class="badge bg-{{ activity.badge }}">{{ activity.type }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center py-3">No recent activity</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Management -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-laptop me-2 text-primary"></i>Active Sessions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for session in active_sessions %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <div class="fw-bold">{{ session.device }}</div>
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>{{ session.location }}
+                                </small>
+                            </div>
+                            <div>
+                                <small class="text-muted me-3">{{ session.last_active }}</small>
+                                {% if session.current %}
+                                <span class="badge bg-success">Current Session</span>
+                                {% else %}
+                                <button class="btn btn-sm btn-outline-danger" onclick="terminateSession('{{ session.id }}')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <hr class="my-3">
+                        
+                        <button class="btn btn-outline-danger w-100" onclick="logoutAllDevices()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout from all devices
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-initials {
+    font-size: 48px;
+    font-weight: bold;
+    color: white;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function terminateSession(sessionId) {
+    if (confirm('Are you sure you want to terminate this session?')) {
+        fetch('/admin/sessions/terminate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({ session_id: sessionId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error terminating session');
+            }
+        });
+    }
+}
+
+function logoutAllDevices() {
+    if (confirm('Are you sure you want to logout from all devices? You will be redirected to login page.')) {
+        fetch('/admin/sessions/logout-all', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/auth/login';
+            }
+        });
+    }
+}
+</script>
+{% endblock %}
